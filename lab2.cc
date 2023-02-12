@@ -42,10 +42,10 @@ main(int argc, char* argv[])
 
     NodeContainer nodes;
     nodes.Create(2);
-
+// data rate - delay
     PointToPointHelper pointToPoint;
-    pointToPoint.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
-    pointToPoint.SetChannelAttribute("Delay", StringValue("2ms"));
+    pointToPoint.SetDeviceAttribute("DataRate", StringValue("17Mbps"));
+    pointToPoint.SetChannelAttribute("Delay", StringValue("17ms"));
 
     NetDeviceContainer devices;
     devices = pointToPoint.Install(nodes);
@@ -53,21 +53,25 @@ main(int argc, char* argv[])
     InternetStackHelper stack;
     stack.Install(nodes);
 
+//  alamat ip
     Ipv4AddressHelper address;
-    address.SetBase("10.1.1.0", "255.255.255.0");
+    address.SetBase("10.1.17.0", "255.255.255.0");
 
     Ipv4InterfaceContainer interfaces = address.Assign(devices);
 
-    UdpEchoServerHelper echoServer(9);
+// server port
+    UdpEchoServerHelper echoServer(17);
 
+// node server
     ApplicationContainer serverApps = echoServer.Install(nodes.Get(1));
     serverApps.Start(Seconds(1.0));
     serverApps.Stop(Seconds(10.0));
 
-    UdpEchoClientHelper echoClient(interfaces.GetAddress(1), 9);
-    echoClient.SetAttribute("MaxPackets", UintegerValue(1));
-    echoClient.SetAttribute("Interval", TimeValue(Seconds(1.0)));
-    echoClient.SetAttribute("PacketSize", UintegerValue(1024));
+// client max paket - interval dan paket size
+    UdpEchoClientHelper echoClient(interfaces.GetAddress(1), 17);
+    echoClient.SetAttribute("MaxPackets", UintegerValue(3));
+    echoClient.SetAttribute("Interval", TimeValue(Seconds(17.0)));
+    echoClient.SetAttribute("PacketSize", UintegerValue(1017));   
 
     ApplicationContainer clientApps = echoClient.Install(nodes.Get(0));
     clientApps.Start(Seconds(2.0));
